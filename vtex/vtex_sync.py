@@ -1,2 +1,2 @@
-def vtex_sync_department():
+def sync_vtex_departments():
     pass

@@ -226,3 +226,5 @@ cython_debug/
 .idea/
 .idea
 
+plan.md
+tips.md
