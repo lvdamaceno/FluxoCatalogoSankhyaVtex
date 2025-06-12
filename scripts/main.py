@@ -1,9 +1,14 @@
+import logging
 from sankhya.snk_fetch import fetch_sankhya_products
 from vtex.vtex_create import create_vtex_product
 from vtex.vtex_fetch import get_vtex_id, get_vtex_sku
 from vtex.vtex_sync import sync_vtex_departments
 from vtex.vtex_update import update_vtex_product
 
+logging.basicConfig(
+    level=logging.INFO,  # Define o nível mínimo de log que será exibido
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 def main():
     """Orquestra a sincronização Sankhya ↔ VTEX."""
