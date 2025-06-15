@@ -12,18 +12,21 @@ logging.basicConfig(
 
 def main():
     """Orquestra a sincronização Sankhya ↔ VTEX."""
-    sync_vtex_departments()
+    try:
+        sync_vtex_departments()
 
-    sankhya_products_list = fetch_sankhya_products()
+        sankhya_products_list = fetch_sankhya_products()
 
-    for sankhya_product in sankhya_products_list:
-        id_vtex = get_vtex_id(sankhya_product)
-        sku_vtex = get_vtex_sku(sankhya_product)
+        for sankhya_product in sankhya_products_list:
+            id_vtex = get_vtex_id(sankhya_product)
+            sku_vtex = get_vtex_sku(sankhya_product)
 
-        if id_vtex:
-            update_vtex_product(id_vtex, sku_vtex)
-        else:
-            create_vtex_product(id_vtex, sku_vtex)
+            if id_vtex:
+                update_vtex_product(id_vtex, sku_vtex)
+            else:
+                create_vtex_product(id_vtex, sku_vtex)
+    except Exception as e:
+        logging.error(f"Erro na funcao Main: {e}")
 
 
 if __name__ == '__main__':

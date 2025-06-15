@@ -6,7 +6,10 @@ import pandas as pd
 from utils.utils import fill_with_zeros
 from vtex.vtex_client import vtex_get
 
-def sync_vtex_departments():
+def fetch_parent_departament():
+    pass
+
+def fetch_vtex_departaments():
     colunas = ['ID_CATEGORIA', 'GRAU', 'ANALITICO', 'ID_CATEGORIAPAI', 'NOME']
     linhas = []
     try:
@@ -20,8 +23,14 @@ def sync_vtex_departments():
                 children_name = item['name']
                 linhas.append([f"{parent_id}{children_id}", 2, 'S', f"{parent_id}{fill_with_zeros()}", children_name])
         df = pd.DataFrame(linhas, columns=colunas)
-        print(df)
+        logging.info(df)
         return df
     except requests.exceptions.RequestException as e:
         logging.warning(f"Não foi possível capturar a lista de Ids: {e}")
         return None
+
+def sync_vtex_departments():
+    df = fetch_vtex_departaments()
+    # comparar o df com a tabela do sankhya
+    # se alguma linha nao existir no vtex fazer a criacao
+    # se alguma linha nao existir no sankhya fazer a criacao
