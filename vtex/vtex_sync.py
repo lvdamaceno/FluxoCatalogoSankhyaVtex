@@ -53,8 +53,8 @@ def fetch_vtex_departaments():
 
 
 def sync_vtex_departments():
-    # fetch_vtex_departaments()
-    fetch_sankhya_departaments()
+    fetch_vtex_departaments()
+    # fetch_sankhya_departaments()
 
     # comparar o df com a tabela do sankhya
     # se alguma linha nao existir no vtex fazer a criacao

@@ -1,6 +1,8 @@
 import pytest
 from vtex.vtex_client import vtex_get
 
+pytestmark = pytest.mark.integration
+
 def test_vtex_get_funciona():
     resultado = vtex_get("catalog_system/pub/category/tree/2")
     assert isinstance(resultado, list), "Resposta não é uma lista"
