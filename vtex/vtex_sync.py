@@ -3,7 +3,7 @@ import logging
 import requests
 import pandas as pd
 
-from sankhya.snk_client import snk_bearer_token
+from sankhya.snk_fetch import fetch_sankhya_departaments
 from utils.utils import fill_with_zeros
 from vtex.vtex_client import vtex_get
 
@@ -22,7 +22,7 @@ def parse_categories(categorias):
         parent_name = categoria['name']
         parent_key = f"{parent_id}{fill_with_zeros()}"  # Ex: 001000
 
-        # Categoria pai
+        # Categorias pais
         linhas.append([parent_key, 1, 'N', '-999999999', parent_name])
 
         # Categorias filhas
@@ -54,8 +54,8 @@ def fetch_vtex_departaments():
 
 def sync_vtex_departments():
     # fetch_vtex_departaments()
+    fetch_sankhya_departaments()
 
-    snk_bearer_token()
     # comparar o df com a tabela do sankhya
     # se alguma linha nao existir no vtex fazer a criacao
     # se alguma linha nao existir no sankhya fazer a criacao

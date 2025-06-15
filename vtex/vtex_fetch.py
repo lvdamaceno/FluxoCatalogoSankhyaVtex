@@ -1,3 +1,10 @@
+import logging
+
+import requests
+
+from vtex.vtex_sync import get_vtex_category_tree, parse_categories, create_df_departaments_vtex
+
+
 def get_vtex_sku(sankhya_product):
     """
     :param sankhya_product:
