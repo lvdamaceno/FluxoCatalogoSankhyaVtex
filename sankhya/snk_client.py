@@ -1,9 +1,13 @@
+import logging
+
 import requests
 import os
 from dotenv import load_dotenv
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type, before_sleep_log
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 LOGIN_URL = "https://api.sankhya.com.br/login"
 BASE_URL = "https://api.sankhya.com.br/gateway/v1/mge/service.sbr?serviceName="
@@ -34,6 +38,12 @@ def snk_bearer_token(params=None):
     return token
 
 
+@retry(
+    stop=stop_after_attempt(5),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type(requests.exceptions.RequestException),
+    before_sleep=before_sleep_log(logger, logging.INFO)
+)
 def snk_get(payload, service):
     url = f"{BASE_URL}{service}&outputType=json"
     token = snk_bearer_token()
@@ -43,4 +53,22 @@ def snk_get(payload, service):
         'Authorization': f'Bearer {token}',
     }
     response = requests.get(url, headers=headers, json=payload, timeout=30)
+    return response.json()
+
+
+@retry(
+    stop=stop_after_attempt(5),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type(requests.exceptions.RequestException),
+    before_sleep=before_sleep_log(logger, logging.INFO)
+)
+def snk_post(payload, service):
+    url = f"{BASE_URL}{service}&outputType=json"
+    token = snk_bearer_token()
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}',
+    }
+    response = requests.post(url, headers=headers, json=payload, timeout=30)
     return response.json()
