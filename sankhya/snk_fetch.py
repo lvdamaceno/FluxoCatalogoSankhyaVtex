@@ -1,18 +1,71 @@
 import logging
-
 import requests
-
 from sankhya.snk_client import snk_get
 import pandas as pd
 
 
 def fetch_sankhya_products():
-    products_list = []
-    return products_list
+    try:
+        all_entities = []
+        offset_page = 0
+        service = "CRUDServiceProvider.loadRecords"
 
+        while True:
+            # monta o payload com a página atual
+            payload = {
+                "serviceName": "CRUDServiceProvider.loadRecords",
+                "requestBody": {
+                    "dataSet": {
+                        "rootEntity": "Produto",
+                        "offsetPage": str(offset_page),
+                        "criteria": {
+                            "expression": {
+                                "$": "AD_USADOLV = 'S'"
+                            }
+                        },
+                        "entity": [
+                            {
+                                "fieldset": {
+                                    "list": "CODPROD"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
 
-import logging
-import requests
+            # faz a requisição
+            response = snk_get(payload, service)
+            entities = response \
+                .get("responseBody", {}) \
+                .get("entities", {}) \
+                .get("entity", [])
+
+            # agrega os resultados
+            all_entities.extend(entities)
+
+            # verifica se há mais páginas
+            has_more = response \
+                           .get("responseBody", {}) \
+                           .get("entities", {}) \
+                           .get("hasMoreResult", "false") \
+                           .lower() == "true"
+
+            logging.info(f"Página {offset_page} trouxe {len(entities)} registros; hasMoreResult={has_more}")
+
+            if not has_more:
+                break
+
+            offset_page += 1
+
+        # retorna um único JSON com todas as entidades
+        products = []
+        for product in all_entities:
+            products.append(product['f0']['$'])
+        return products
+    except requests.exceptions.RequestException as e:
+        logging.error("Erro na requisição Sankhya:", exc_info=e)
+        return None
 
 
 def get_sankhya_departaments():
