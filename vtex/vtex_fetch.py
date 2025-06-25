@@ -1,21 +1,9 @@
 import logging
-
 import requests
 
-from vtex.vtex_client import vtex_get
+from vtex.vtex_client import vtex_get, vtex_head
 from vtex.vtex_df_departaments import parse_categories, create_df_departaments_vtex
 from vtex.vtex_get import get_vtex_category_tree
-
-
-def sankhya_product_exist_no_vtex(codprod):
-    try:
-        service = f"catalog_system/pvt/products/productgetbyrefid/{codprod}"
-        response = vtex_get(service)
-        return bool(response)
-    except Exception as e:
-        logging.error(f"Produto {codprod} não existe no Vtex, {e}")
-        return False
-
 
 def fetch_vtex_departaments():
     try:
@@ -25,3 +13,39 @@ def fetch_vtex_departaments():
     except requests.exceptions.RequestException as e:
         logging.error(f"Não foi possível capturar a lista de categorias VTEX: {e}")
         return None
+
+
+def fetch_vtex_id(codprod):
+    service = f"catalog_system/pvt/products/productgetbyrefid/{codprod}"
+    try:
+        result = vtex_get(service)
+        vtex_id = result["Id"]
+        logging.info(f"VTEX ID: {vtex_id}")
+        return vtex_id
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Falha ao capturar o id do produto {codprod}: {e}")
+        return None
+
+
+def fetch_vtex_sku_id(vtex_id):
+    service = f"catalog_system/pvt/sku/stockkeepingunitByProductId/{vtex_id}"
+    try:
+        result = vtex_get(service)
+        sku_id = result[0]['Id']
+        logging.info(f"SKU ID: {sku_id}")
+        return sku_id
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Falha ao capturar o sku do id {vtex_id}: {e}")
+        return None
+
+
+
+def vtex_exist_sku_id(codprod):
+    vtex_id = fetch_vtex_id(codprod)
+    path = f'catalog_system/pvt/sku/stockkeepingunitByProductId/{vtex_id}'
+    if vtex_head(path):
+        logging.info(f"Produto {codprod} já tem um sku")
+        return True
+    else:
+        logging.info(f"Produto {codprod} não já tem um sku")
+        return False

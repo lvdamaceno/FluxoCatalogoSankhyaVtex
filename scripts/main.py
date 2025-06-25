@@ -1,6 +1,11 @@
 import logging
-from sankhya.snk_fetch import fetch_sankhya_products
-from vtex.vtex_fetch import sankhya_product_exist_no_vtex
+from concurrent.futures import ThreadPoolExecutor
+
+from vtex.vtex_create import vtex_create_product, vtex_create_sku
+from vtex.vtex_fetch import vtex_exist_sku_id
+from vtex.vtex_utils import sankhya_product_exist_no_vtex
+from vtex.vtex_sync import sync_vtex_departments
+from vtex.vtex_update import vtex_update_product, vtex_update_sku
 
 logging.basicConfig(
     level=logging.INFO,  # Define o nível mínimo de log que será exibido
@@ -9,14 +14,21 @@ logging.basicConfig(
 
 def main():
     """Orquestra a sincronização Sankhya ↔ VTEX."""
-    # sync_vtex_departments()
+    codprod = 444580
+    try:
+        # sync_vtex_departments()
 
-    sankhya_products_list = fetch_sankhya_products()
-    for product in sankhya_products_list:
-        print(product, sankhya_product_exist_no_vtex(product))
-
-
-
+        if sankhya_product_exist_no_vtex(codprod):
+            # if product exist on vtex
+            vtex_update_product(codprod)
+            vtex_update_sku(codprod)
+        else:
+            # if product dont exist on vtex
+            vtex_create_product(codprod)
+            vtex_update_product(codprod)
+            vtex_create_sku(codprod)
+    except Exception as e:
+        logging.error(e)
 
 if __name__ == '__main__':
     main()
