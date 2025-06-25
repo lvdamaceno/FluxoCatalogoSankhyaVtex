@@ -1,10 +1,7 @@
 import logging
-from concurrent.futures import ThreadPoolExecutor
 
 from vtex.vtex_create import vtex_create_product, vtex_create_sku, vtex_create_sku_file
-from vtex.vtex_fetch import vtex_exist_sku_id
 from vtex.vtex_utils import sankhya_product_exist_no_vtex
-from vtex.vtex_sync import sync_vtex_departments
 from vtex.vtex_update import vtex_update_product, vtex_update_sku, vtex_update_sku_file
 
 logging.basicConfig(
@@ -16,10 +13,12 @@ logging.basicConfig(
 def main():
     """
     Orquestra a sincronização Sankhya ↔ VTEX.
-    442010,442008,442268,438737,422948,423304,436935,439881,439882,441855,420909,442082,440445,441624,423304,428945,431123,432580,436290,442068,442069,442075
+    442008,442268,438737,422948,423304,436935,439881,439882,441855,420909,442082,440445,441624,423304,428945,431123,
+    432580,436290,442068,442069
     """
-    codprod = 442076
+    codprod = 438737
     try:
+        # Reativar e testar
         # sync_vtex_departments()
 
         if sankhya_product_exist_no_vtex(codprod):

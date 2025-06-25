@@ -241,7 +241,6 @@ def fetch_sankhya_sku_info(codprod):
         logging.error(f"❌ Falha ao capturar informacoes de sku do produto {codprod}", e)
 
 
-
 def fetch_sankhya_sku_file_info(codprod):
     try:
         service = "CRUDServiceProvider.loadRecords"

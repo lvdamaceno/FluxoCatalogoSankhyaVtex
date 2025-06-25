@@ -6,7 +6,7 @@ from vtex.vtex_client import vtex_head
 def sankhya_product_exist_no_vtex(codprod):
     """
         Retorna True se HEAD retornar 200, False se 404 ou erro.
-        """
+    """
     service = f"catalog_system/pvt/products/productgetbyrefid/{codprod}"
     try:
         if vtex_head(service):

@@ -4,7 +4,7 @@ import requests
 from requests.adapters import HTTPAdapter
 import os
 from dotenv import load_dotenv
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type, wait_fixed, before_sleep_log
+from tenacity import retry, stop_after_attempt, wait_fixed, before_sleep_log, wait_exponential
 
 load_dotenv()
 
@@ -36,17 +36,13 @@ session.mount("http://", adapter)
 
 @retry(
     stop=stop_after_attempt(3),
-    wait=wait_fixed(0),
+    wait=wait_exponential(multiplier=1, max=10),
     retry_error_callback=lambda state: None,
     before_sleep=before_sleep_log(logger, logging.INFO)
 )
-def vtex_head(path: str) -> int:
-    """
-    Executa HEAD para verificar existência.
-    Retorna status_code ou lança erro.
-    """
+def vtex_head(path):
     url = f"{BASE_URL}/{path}"
-    resp = session.head(url, headers=headers, timeout=5)
+    resp = session.head(url, headers=headers, timeout=30)
     logging.info(f"📊 HEAD {resp.status_code}")
     try:
         if resp.status_code == 200:
@@ -60,7 +56,7 @@ def vtex_head(path: str) -> int:
 
 @retry(
     stop=stop_after_attempt(3),
-    wait=wait_fixed(0),
+    wait=wait_exponential(multiplier=1, max=10),
     retry_error_callback=lambda state: None,
     before_sleep=before_sleep_log(logger, logging.INFO)
 )
@@ -68,14 +64,14 @@ def vtex_get(path, params=None):
     """Função genérica para requisições GET na VTEX."""
     url = f"{BASE_URL}/{path}"
     time.sleep(1)
-    response = session.get(url, headers=headers, params=params, timeout=5)
+    response = session.get(url, headers=headers, params=params, timeout=30)
     response.raise_for_status()
     return response.json()
 
 
 @retry(
     stop=stop_after_attempt(3),
-    wait=wait_fixed(0),
+    wait=wait_exponential(multiplier=1, max=10),
     retry_error_callback=lambda state: None,
     before_sleep=before_sleep_log(logger, logging.INFO)
 )
@@ -83,7 +79,7 @@ def vtex_post(path, payload):
     """Função genérica para requisições POST na VTEX."""
     url = f"{BASE_URL}/{path}"
     time.sleep(1)
-    response = session.post(url, headers=headers, json=payload, timeout=5)
+    response = session.post(url, headers=headers, json=payload, timeout=30)
     try:
         response.raise_for_status()
     except requests.HTTPError as e:
@@ -95,7 +91,7 @@ def vtex_post(path, payload):
 
 @retry(
     stop=stop_after_attempt(3),
-    wait=wait_fixed(0),
+    wait=wait_exponential(multiplier=1, max=10),
     retry_error_callback=lambda state: None,
     before_sleep=before_sleep_log(logger, logging.INFO)
 )
@@ -103,7 +99,7 @@ def vtex_put(path, payload):
     """Função genérica para requisições PUT na VTEX."""
     url = f"{BASE_URL}/{path}"
     time.sleep(1)
-    response = session.put(url, headers=headers, json=payload, timeout=5)
+    response = session.put(url, headers=headers, json=payload, timeout=30)
     try:
         response.raise_for_status()
     except requests.HTTPError as e:

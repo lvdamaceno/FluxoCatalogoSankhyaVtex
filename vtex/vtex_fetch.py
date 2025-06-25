@@ -39,7 +39,6 @@ def fetch_vtex_sku_id(vtex_id):
         return None
 
 
-
 def vtex_exist_sku_id(codprod):
     vtex_id = fetch_vtex_id(codprod)
     path = f'catalog_system/pvt/sku/stockkeepingunitByProductId/{vtex_id}'

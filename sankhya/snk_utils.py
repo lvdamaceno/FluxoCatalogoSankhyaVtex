@@ -32,6 +32,7 @@ def link_id(description, codprod):
     except Exception as e:
         logging.error(f"❌ Erro ao gerar o link para {description}: {e}")
 
+
 def meta_tag_description(description):
     """
 
