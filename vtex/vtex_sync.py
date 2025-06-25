@@ -10,13 +10,13 @@ def diff_departaments(df1, df2, name1, name2):
         merged = df1.merge(df2, how='left', indicator=True)
         diff = merged[merged['_merge'] == 'left_only'].drop(columns=['_merge'])
         if len(diff) > 0:
-            logging.info(f"Valores que existe no {name1} e não existe no {name2}")
+            logging.info(f"📊 Valores que existe no {name1} e não existe no {name2}")
             logging.info(diff)
             return diff
         else:
-            logging.info(f"Não há valores diferentes")
+            logging.info(f"📊 Não há valores diferentes")
     except Exception as e:
-        logging.error(e)
+        logging.error(f"❌ Erro ao comparar departamentos {e}")
 
 
 def sync_vtex_departments():

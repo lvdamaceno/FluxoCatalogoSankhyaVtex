@@ -39,6 +39,6 @@ def insert_sankhya_departaments(diff):
                 }
             }
             snk_post(payload, service)
-            logging.info(f"Departamento: {NOME} salvo no Sankhya")
+            logging.info(f"🟢 Departamento: {NOME} salvo no Sankhya")
     except Exception as e:
-        logging.error(f"Erro ao enviar departamento para o sankhya: {e}")
+        logging.error(f"❌ Erro ao enviar departamento para o sankhya: {e}")

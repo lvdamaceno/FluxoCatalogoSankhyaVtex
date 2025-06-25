@@ -15,9 +15,9 @@ app_key = os.getenv("VTEX_APP_KEY")
 app_token = os.getenv("VTEX_APP_TOKEN")
 headers = {
     'Accept': 'application/json',
-	'Content-Type': 'application/json',
-	'X-VTEX-API-AppKey': app_key,
-	'X-VTEX-API-AppToken': app_token
+    'Content-Type': 'application/json',
+    'X-VTEX-API-AppKey': app_key,
+    'X-VTEX-API-AppToken': app_token
 }
 
 BASE_URL = f"https://{account_name}.vtexcommercestable.com.br/api"
@@ -33,6 +33,7 @@ adapter = requests.adapters.HTTPAdapter(
 session.mount("https://", adapter)
 session.mount("http://", adapter)
 
+
 @retry(
     stop=stop_after_attempt(3),
     wait=wait_fixed(0),
@@ -46,12 +47,13 @@ def vtex_head(path: str) -> int:
     """
     url = f"{BASE_URL}/{path}"
     resp = session.head(url, headers=headers, timeout=5)
+    logging.info(f"📊 HEAD {resp.status_code}")
     try:
-        if resp.status_code == 404:
-            return False
+        if resp.status_code == 200:
+            return True
         else:
             resp.raise_for_status()
-            return True
+            return False
     except requests.exceptions.RequestException:
         logger.error(f"HEAD request failed with status code {resp.status_code}")
 
@@ -70,6 +72,7 @@ def vtex_get(path, params=None):
     response.raise_for_status()
     return response.json()
 
+
 @retry(
     stop=stop_after_attempt(3),
     wait=wait_fixed(0),
@@ -84,7 +87,7 @@ def vtex_post(path, payload):
     try:
         response.raise_for_status()
     except requests.HTTPError as e:
-        logging.error(e)
+        logging.error(f"❌ Erro: {e}")
         logging.error(f"VTEX retornou {response.status_code}: {response.text}")
         raise
     return response.json()
@@ -104,7 +107,7 @@ def vtex_put(path, payload):
     try:
         response.raise_for_status()
     except requests.HTTPError as e:
-        logging.error(e)
-        logging.error(f"VTEX retornou {response.status_code}: {response.text}")
+        logging.error(f"❌ Erro: {e}")
+        logging.error(f"❌ VTEX retornou {response.status_code}: {response.text}")
         raise
     return response.json()

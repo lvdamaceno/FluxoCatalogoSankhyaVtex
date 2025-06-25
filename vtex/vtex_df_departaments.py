@@ -33,7 +33,7 @@ def create_df_departaments_vtex(linhas):
         colunas = ['ID_CATEGORIA', 'GRAU', 'ANALITICO', 'ID_CATEGORIAPAI', 'NOME']
         df = pd.DataFrame(linhas, columns=colunas)
         df['NOME'] = df['NOME'].str.upper()
-        logging.info(f"Vtex departaments DataFrame creation {df}")
+        logging.info(f"🟢 Vtex departaments DataFrame creation {df}")
         return df
     except requests.exceptions.RequestException as e:
-        logging.error(e)
+        logging.error(f"❌ Erro ao criar df de departamentos: {e}")

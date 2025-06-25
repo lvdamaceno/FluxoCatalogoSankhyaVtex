@@ -51,7 +51,7 @@ def sankhya_departaments():
                            .get("hasMoreResult", "false") \
                            .lower() == "true"
 
-            logging.info(f"Página {offset_page} trouxe {len(entities)} registros; hasMoreResult={has_more}")
+            logging.info(f"📊 Página {offset_page} trouxe {len(entities)} registros; hasMoreResult={has_more}")
 
             if not has_more:
                 break
@@ -61,7 +61,7 @@ def sankhya_departaments():
         # retorna um único JSON com todas as entidades
         return all_entities
     except requests.exceptions.RequestException as e:
-        logging.error("Erro na requisição Sankhya:", exc_info=e)
+        logging.error("❌ Erro na requisição Sankhya:", exc_info=e)
         return None
 
 
@@ -78,10 +78,10 @@ def fetch_sankhya_departaments():
             nome = departamento.get("f2").get("$")
             linhas.append([id_categoria, grau, analitico, id_categoria_pai, nome])
         df = pd.DataFrame(linhas, columns=colunas)
-        logging.info(f"Sankhya departaments DataFrame creation {df}")
+        logging.info(f"🗂️ Sankhya departaments DataFrame creation {df}")
         return df
     except requests.exceptions.RequestException as e:
-        logging.error(e)
+        logging.error(f"❌ Erro ao buscar departamentos: {e}")
 
 
 def fetch_sankhya_grupo_informacoes_vtex(codprod):
@@ -121,10 +121,10 @@ def fetch_sankhya_grupo_informacoes_vtex(codprod):
             "Diferenciais": entidade.get("f3", {}).get("$") or "",
             "Download": entidade.get("f4", {}).get("$") or ""
         }
-        logging.info(f"Info: {info}")
+        logging.info(f"📊 Info: {info}")
         return info
     except requests.exceptions.RequestException as e:
-        logging.error(f"Falha ao capturar informacoes do produto {codprod}", e)
+        logging.error(f"❌ Falha ao capturar informacoes do produto {codprod}", e)
 
 
 def fetch_sankhya_basic_info(codprod):
@@ -174,10 +174,10 @@ def fetch_sankhya_basic_info(codprod):
             "ShowWithoutStock": True,
             "Score": 1
         }
-        logging.info(f"Info: {json.dumps(info, indent=4, ensure_ascii=False)}")
+        logging.info(f"📊 Info: {json.dumps(info, indent=4, ensure_ascii=False)}")
         return info
     except requests.exceptions.RequestException as e:
-        logging.error(f"Falha ao capturar informacoes básicas do produto {codprod}", e)
+        logging.error(f"❌ Falha ao capturar informacoes básicas do produto {codprod}", e)
 
 
 def fetch_sankhya_sku_info(codprod):
@@ -235,7 +235,53 @@ def fetch_sankhya_sku_info(codprod):
             "MeasurementUnit": unidade,
             "Videos": [video]
         }
-        logging.info(f"Info: {json.dumps(info, indent=4, ensure_ascii=False)}")
+        logging.info(f"📊 Info: {json.dumps(info, indent=4, ensure_ascii=False)}")
         return info
     except requests.exceptions.RequestException as e:
-        logging.error(f"Falha ao capturar informacoes de sku do produto {codprod}", e)
+        logging.error(f"❌ Falha ao capturar informacoes de sku do produto {codprod}", e)
+
+
+
+def fetch_sankhya_sku_file_info(codprod):
+    try:
+        service = "CRUDServiceProvider.loadRecords"
+        payload = {
+            "serviceName": "CRUDServiceProvider.loadRecords",
+            "requestBody": {
+                "dataSet": {
+                    "rootEntity": "Produto",
+                    "includePresentationFields": "N",
+                    "offsetPage": "0",
+                    "criteria": {
+                        "expression": {
+                            "$": f"this.CODPROD = {codprod}"
+                        }
+                    },
+                    "entity": {
+                        "fieldset": {
+                            "list": "CODPROD, DESCRPROD, ENDIMAGEM"
+                        }
+                    }
+                }
+            }
+        }
+        result = snk_get(payload, service)
+        entidade = result.get("responseBody", {}).get("entities", {}).get("entity", {})
+
+        codprod = entidade.get("f0", {}).get("$") or ""
+        name = entidade.get("f1", {}).get("$") or ""
+        endimagem = entidade.get("f2", {}).get("$") or ""
+
+        info = {
+            "IsMain": True,
+            "Label": "Main",
+            "Name": link_id(name, codprod),
+            "Text": link_id(name, codprod),
+            "Url": endimagem,
+            "Position": 0
+        }
+        logging.info(f"📊 Sku file info: {json.dumps(info, indent=4, ensure_ascii=False)}")
+        return info
+
+    except requests.exceptions.RequestException as e:
+        logging.error(f"❌ Falha ao capturar informacoes de sku file do produto {codprod}", e)

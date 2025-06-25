@@ -1,14 +1,15 @@
 import logging
 
-from sankhya.snk_fetch import fetch_sankhya_grupo_informacoes_vtex, fetch_sankhya_basic_info, fetch_sankhya_sku_info
-from vtex.vtex_client import vtex_put, vtex_post
-from vtex.vtex_create import vtex_create_sku
-from vtex.vtex_fetch import fetch_vtex_id, vtex_exist_sku_id, fetch_vtex_sku_id
+from sankhya.snk_fetch import fetch_sankhya_grupo_informacoes_vtex, fetch_sankhya_basic_info, fetch_sankhya_sku_info, \
+    fetch_sankhya_sku_file_info
+from vtex.vtex_client import vtex_put, vtex_post, vtex_head
+from vtex.vtex_create import vtex_create_sku, vtex_create_sku_file
+from vtex.vtex_fetch import fetch_vtex_id, vtex_exist_sku_id, fetch_vtex_sku_id, fetch_vtex_sku_file_id
 
 
 def vtex_update_basic_info(codprod, vtex_id):
     basic_info = fetch_sankhya_basic_info(codprod)
-    logging.info(f"Enviando atualização do cadastro do produto {codprod}, id: {vtex_id}")
+    logging.info(f"🚀 Enviando atualização do cadastro do produto {codprod}, id: {vtex_id}")
     payload = {
         "Name": basic_info["Name"],  # ajuste nomes
         "CategoryId": basic_info["CategoryId"],  # ou CategoryPath
@@ -30,7 +31,7 @@ def vtex_update_basic_info(codprod, vtex_id):
 
 def vtex_update_specifications(codprod, vtex_id):
     sankhya_product_info = fetch_sankhya_grupo_informacoes_vtex(codprod)
-    logging.info(f"Enviando atualização do grupo de informações do produto {codprod}, id: {vtex_id}")
+    logging.info(f"🚀 Enviando atualização do grupo de informações do produto {codprod}, id: {vtex_id}")
     payload = [
         {
             "Value": [sankhya_product_info["Descrição"]],
@@ -63,14 +64,14 @@ def vtex_update_specifications(codprod, vtex_id):
 
 
 def vtex_update_product(codprod):
-    logging.info(f"Updating product {codprod}")
+    logging.info(f"🚀 Atualizando produto {codprod}")
     try:
         vtex_id = fetch_vtex_id(codprod)
         vtex_update_basic_info(codprod, vtex_id)
         vtex_update_specifications(codprod, vtex_id)
 
     except Exception as e:
-        logging.error(f"Erro ao atualizar produto {codprod}: {e}")
+        logging.error(f"❌ Erro ao atualizar produto {codprod}: {e}")
 
 
 def vtex_update_sku(codprod):
@@ -79,7 +80,7 @@ def vtex_update_sku(codprod):
             vtex_id = fetch_vtex_id(codprod)
             sku_id = fetch_vtex_sku_id(vtex_id)
 
-            logging.info(f"Atualizando sku para o produto {codprod}, id {vtex_id}, sku {sku_id}")
+            logging.info(f"🟢 Atualizando sku para o produto {codprod}, id {vtex_id}, sku {sku_id}")
 
             sku_info = fetch_sankhya_sku_info(codprod)
             payload = {
@@ -108,7 +109,35 @@ def vtex_update_sku(codprod):
             path = f"catalog/pvt/stockkeepingunit/{sku_id}"
             vtex_put(path, payload)
         else:
-            logging.info(f"Criando Sku para o produto {codprod}")
+            logging.info(f"🟢 Criando Sku para o produto {codprod}")
             vtex_create_sku(codprod)
     except Exception as e:
-        logging.error(f"Erro ao atualizar SKU para o produto {codprod}: {e}")
+        logging.error(f" ❌Erro ao atualizar SKU para o produto {codprod}: {e}")
+
+
+def vtex_update_sku_file(codprod):
+    try:
+        vtex_id = fetch_vtex_id(codprod)
+        sku_id = fetch_vtex_sku_id(vtex_id)
+
+        sku_file_id = fetch_vtex_sku_file_id(codprod)
+        path = f"catalog/pvt/stockkeepingunit/{sku_id}/file/{sku_file_id}"
+        logging.info(f"🟢 Atualizando sku file para o produto {codprod}, id {vtex_id}, sku {sku_id}")
+
+        if sku_file_id is not None:
+            sku_file_info = fetch_sankhya_sku_file_info(codprod)
+            payload = {
+                "IsMain": True,
+                "Label": "Main",
+                "Name": sku_file_info['Name'],
+                "Text": sku_file_info['Name'],
+                "Url": sku_file_info['Url'],
+                "Position": 0
+            }
+            vtex_put(path, payload)
+        else:
+            logging.info(f"🟢 Criando sku file para o produto {codprod}, id {vtex_id}, sku {sku_id}")
+            vtex_create_sku_file(codprod)
+
+    except Exception as e:
+        logging.error(f"❌ Erro ao criar Sku File para o produto {codprod}: {e}")

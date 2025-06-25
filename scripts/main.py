@@ -1,34 +1,40 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
-from vtex.vtex_create import vtex_create_product, vtex_create_sku
+from vtex.vtex_create import vtex_create_product, vtex_create_sku, vtex_create_sku_file
 from vtex.vtex_fetch import vtex_exist_sku_id
 from vtex.vtex_utils import sankhya_product_exist_no_vtex
 from vtex.vtex_sync import sync_vtex_departments
-from vtex.vtex_update import vtex_update_product, vtex_update_sku
+from vtex.vtex_update import vtex_update_product, vtex_update_sku, vtex_update_sku_file
 
 logging.basicConfig(
     level=logging.INFO,  # Define o nível mínimo de log que será exibido
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    format='[%(asctime)s] [%(levelname)s] [%(filename)s] \n %(message)s',
+    datefmt='%d-%m/%H:%M'
 )
 
 def main():
-    """Orquestra a sincronização Sankhya ↔ VTEX."""
-    codprod = 444580
+    """
+    Orquestra a sincronização Sankhya ↔ VTEX.
+    442010,442008,442268,438737,422948,423304,436935,439881,439882,441855,420909,442082,440445,441624,423304,428945,431123,432580,436290,442068,442069,442075
+    """
+    codprod = 442076
     try:
         # sync_vtex_departments()
 
         if sankhya_product_exist_no_vtex(codprod):
-            # if product exist on vtex
+            #🟢 if product exist on vtex
             vtex_update_product(codprod)
             vtex_update_sku(codprod)
+            vtex_update_sku_file(codprod)
         else:
-            # if product dont exist on vtex
+            #🔴 if product dont exist on vtex
             vtex_create_product(codprod)
             vtex_update_product(codprod)
             vtex_create_sku(codprod)
+            vtex_create_sku_file(codprod)
     except Exception as e:
-        logging.error(e)
+        logging.error(f"❌ Erro no módulo main: {e}")
 
 if __name__ == '__main__':
     main()

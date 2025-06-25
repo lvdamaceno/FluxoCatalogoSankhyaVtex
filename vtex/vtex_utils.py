@@ -10,11 +10,11 @@ def sankhya_product_exist_no_vtex(codprod):
     service = f"catalog_system/pvt/products/productgetbyrefid/{codprod}"
     try:
         if vtex_head(service):
-            logging.info(f"Produto {codprod} existe no Vtex")
+            logging.warning(f"⚠️ Produto {codprod} existe no Vtex")
             return True
         else:
-            logging.info(f"Produto não {codprod} existe no Vtex")
+            logging.warning(f"⚠️ Produto não {codprod} existe no Vtex")
             return False
     except Exception as e:
-        logging.error(f"Erro ao checar produto {codprod}: {e}")
+        logging.error(f"❌ Erro ao checar produto {codprod}: {e}")
         return False

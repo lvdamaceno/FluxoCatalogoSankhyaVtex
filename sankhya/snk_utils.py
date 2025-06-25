@@ -14,7 +14,7 @@ def extract_department_id(department):
             department_id = extract
         return department_id
     except Exception as e:
-        logging.error(f"Erro ao extrair o departmento para {department}: {e}")
+        logging.error(f"❌ Erro ao extrair o departmento para {department}: {e}")
 
 
 def link_id(description, codprod):
@@ -30,7 +30,7 @@ def link_id(description, codprod):
         link = f"{dash_description}-{codprod}"
         return link
     except Exception as e:
-        logging.error(f"Erro ao gerar o link para {description}: {e}")
+        logging.error(f"❌ Erro ao gerar o link para {description}: {e}")
 
 def meta_tag_description(description):
     """
@@ -42,4 +42,4 @@ def meta_tag_description(description):
         lower_description = description.lower()
         return lower_description
     except Exception as e:
-        logging.error(f"Erro ao extrair o meta tag para {description}: {e}")
+        logging.error(f"❌ Erro ao extrair o meta tag para {description}: {e}")
