@@ -17,4 +17,4 @@ def sankhya_product_exist_no_vtex(codprod):
             return False
     except Exception as e:
         logging.error(f"❌ Erro ao checar produto {codprod}: {e}")
-        return False
+        return None

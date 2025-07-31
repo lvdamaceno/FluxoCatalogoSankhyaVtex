@@ -160,17 +160,17 @@ def fetch_sankhya_basic_info(codprod):
         description = entidade.get("f5", {}).get("$") or ""
 
         info = {
-            "Name": name,
+            "Name": name.replace("/", ""),
             "CategoryId": department_id,
             "BrandName": brand_name,
             "RefId": refid,
-            "Title": name,
-            "LinkId": link_id(name, refid),
+            "Title": name.replace("/", ""),
+            "LinkId": link_id(name, refid).replace("/", ""),
             "Description": description,
             "ReleaseDate": date.today().isoformat(),
             "IsVisible": True,
             "IsActive": True,
-            "MetaTagDescription": meta_tag_description(name),
+            "MetaTagDescription": meta_tag_description(name).replace("/", ""),
             "ShowWithoutStock": True,
             "Score": 1
         }
