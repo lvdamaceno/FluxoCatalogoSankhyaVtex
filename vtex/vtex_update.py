@@ -24,7 +24,7 @@ def vtex_update_basic_info(codprod):
             "IsVisible": True,
             "IsActive": True,
             "MetaTagDescription": basic_info["MetaTagDescription"],
-            "ShowWithoutStock": True,
+            "ShowWithoutStock": False,
             "Score": basic_info.get("score", 1)
         }
         service = f'catalog/pvt/product/{vtex_id}'

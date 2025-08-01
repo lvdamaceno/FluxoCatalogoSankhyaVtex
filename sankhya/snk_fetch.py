@@ -171,7 +171,7 @@ def fetch_sankhya_basic_info(codprod):
             "IsVisible": True,
             "IsActive": True,
             "MetaTagDescription": meta_tag_description(name).replace("/", ""),
-            "ShowWithoutStock": True,
+            "ShowWithoutStock": False,
             "Score": 1
         }
         logging.info(f"📊 Info: {json.dumps(info, indent=4, ensure_ascii=False)}")

@@ -22,7 +22,7 @@ def vtex_create_product(codprod):
             "IsVisible": True,
             "IsActive": True,
             "MetaTagDescription": basic_info["MetaTagDescription"],
-            "ShowWithoutStock": True,
+            "ShowWithoutStock": False,
             "Score": basic_info.get("score", 1)
         }
         service = 'catalog/pvt/product'
