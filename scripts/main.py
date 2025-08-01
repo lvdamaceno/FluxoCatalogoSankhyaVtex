@@ -46,7 +46,7 @@ def vtex_process_product(codprod):
             # 🔴 Product dont exist on vtex
             vtex_process_new_product(codprod)
     else:
-        logging.info("Revalide os campos obrigatórios do cadastro")
+        logging.info("Revalide os campos obrigatórios do cadastro do produto")
 
 
 if __name__ == '__main__':
