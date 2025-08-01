@@ -1,3 +1,4 @@
+import json
 import logging
 import requests
 
@@ -16,9 +17,11 @@ def fetch_vtex_departaments():
 
 
 def fetch_vtex_id(codprod):
+    logging.info(f"📊 Buscando Vtex Id")
     service = f"catalog_system/pvt/products/productgetbyrefid/{codprod}"
     try:
         result = vtex_get(service)
+        logging.info(f"📊 Fetch Vtex Id: {json.dumps(result, indent=4)}")
         vtex_id = result["Id"]
         logging.info(f"📊 VTEX ID: {vtex_id}")
         return vtex_id
@@ -40,6 +43,7 @@ def fetch_vtex_sku_id(vtex_id):
 
 
 def vtex_exist_sku_id(codprod):
+    logging.info(f"🟢 Checando se existe sku para o produto {codprod}")
     vtex_id = fetch_vtex_id(codprod)
     path = f'catalog_system/pvt/sku/stockkeepingunitByProductId/{vtex_id}'
     if vtex_head(path):

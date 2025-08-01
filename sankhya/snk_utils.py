@@ -27,7 +27,8 @@ def link_id(description, codprod):
     try:
         lower_description = description.lower()
         dash_description = lower_description.replace(' ', '-')
-        link = f"{dash_description}-{codprod}"
+        remove_pontuation = dash_description.replace('.', '')
+        link = f"{remove_pontuation}-{codprod}"
         return link
     except Exception as e:
         logging.error(f"❌ Erro ao gerar o link para {description}: {e}")

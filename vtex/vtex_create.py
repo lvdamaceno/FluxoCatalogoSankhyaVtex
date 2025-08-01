@@ -7,11 +7,9 @@ from vtex.vtex_fetch import fetch_vtex_id, vtex_exist_sku_id, fetch_vtex_sku_id
 
 
 def vtex_create_product(codprod):
+    logging.info(f"🟢 Criando produto {codprod}")
     try:
-        logging.info(f"🟢 Criando produto {codprod}")
         basic_info = fetch_sankhya_basic_info(codprod)
-
-        logging.info(f"🚀 Enviando cadastro do produto {codprod}")
         payload = {
             "Name": basic_info["Name"],  # ajuste nomes
             "CategoryId": basic_info["CategoryId"],  # ou CategoryPath
@@ -28,6 +26,7 @@ def vtex_create_product(codprod):
             "Score": basic_info.get("score", 1)
         }
         service = 'catalog/pvt/product'
+        logging.info(f"🚀 Enviando cadastro do produto {codprod}")
         vtex_post(service, payload)
     except Exception as e:
         logging.error(f"❌ Erro ao enviar cadastro do produto {codprod}: {e}")
@@ -38,6 +37,7 @@ def vtex_create_sku(codprod):
     try:
         vtex_id = fetch_vtex_id(codprod)
         sku_info = fetch_sankhya_sku_info(codprod)
+        logging.info(f"🟢 Id: {codprod}")
         payload = {
             "ProductId": vtex_id,
             "IsActive": False,
@@ -71,11 +71,11 @@ def vtex_create_sku(codprod):
 
 
 def vtex_create_sku_file(codprod):
+    logging.info(f"🟢 Criando sku file para o produto {codprod}")
     try:
         vtex_id = fetch_vtex_id(codprod)
         sku_id = fetch_vtex_sku_id(vtex_id)
-
-        logging.info(f"🟢 Criando sku file para o produto {codprod}, id {vtex_id}, sku {sku_id}")
+        logging.info(f"🟢 Id: {codprod}, SkuID: {sku_id}")
         sku_file_info = fetch_sankhya_sku_file_info(codprod)
 
         path = f"catalog/pvt/stockkeepingunit/{sku_id}/file"
