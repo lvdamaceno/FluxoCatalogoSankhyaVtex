@@ -7,6 +7,8 @@ from vtex.vtex_utils import sankhya_product_exist_no_vtex
 from vtex.vtex_update import vtex_update_sku, vtex_update_basic_info, \
     vtex_update_specifications
 
+import os
+
 logging.basicConfig(
     level=logging.INFO,  # Define o nível mínimo de log que será exibido
     format='[%(asctime)s] [%(levelname)s] [%(filename)s] %(message)s',
@@ -38,7 +40,7 @@ def vtex_process_update_product(codprod):
 
 def vtex_process_product(codprod):
     if check_sankhya_ecommerce_infos(codprod):
-        # 🟢 Product ready on sankhya
+        # 🟢 Product ready on sankhyaMIC
         if sankhya_product_exist_no_vtex(codprod):
             # 🟢 Product exist on vtex
             vtex_process_update_product(codprod)
@@ -53,4 +55,11 @@ if __name__ == '__main__':
     # Reativar e testar
     # sync_vtex_departments()
 
-    vtex_process_product(417568)
+    produtos = [412158]
+
+    for produto in produtos:
+        print(f"Produto: {produto}")
+        vtex_process_product(produto)
+
+        # Toca o som "Hero" do macOS
+        os.system("afplay /System/Library/Sounds/Hero.aiff")

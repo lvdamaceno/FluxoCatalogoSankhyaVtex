@@ -54,16 +54,16 @@ def check_sankhya_ecommerce_infos(codprod):
         usado = bool(infos.get('Usado no Ecommerce'))
         situacao = bool(infos.get('Situação no Ecommerce'))
         categoria = bool(infos.get('Categoria Vtex'))
-        imagem_principal = bool(infos.get('Imagem Principal'))
+        # imagem_principal = bool(infos.get('Imagem Principal'))
 
         valid_flags = {
-            'Descrição': decricao,
-            'Características': caracteristicas,
-            'Imagem Descrição': imagem_descricao,
+            # 'Descrição': decricao,
+            # 'Características': caracteristicas,
+            # 'Imagem Descrição': imagem_descricao,
             'Usado no Ecommerce': usado,
             'Situação no Ecommerce': situacao,
             'Categoria Vtex': categoria,
-            'Imagem Principal': imagem_principal,
+            # 'Imagem Principal': imagem_principal,
         }
 
         if all(valid_flags.values()):

@@ -59,7 +59,7 @@ def vtex_create_sku(codprod):
             "ManufacturerCode": sku_info['ManufacturerCode'],
             "CommercialConditionId": 1,
             "MeasurementUnit": sku_info['MeasurementUnit'],
-            "UnitMultiplier": 2,
+            "UnitMultiplier": 1,
         }
         logging.info(f"📊 Payload create sku: {json.dumps(payload, indent=4)}")
 

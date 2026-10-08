@@ -117,7 +117,7 @@ def fetch_sankhya_grupo_informacoes_vtex(codprod):
         info = {
             "Descrição": entidade.get("f0", {}).get("$") or "",
             "Características": entidade.get("f1", {}).get("$") or "",
-            "Imagem": entidade.get("f2", {}).get("$") or "",
+            "Imagem": entidade.get("f2", {}).get("$") or f"https://img.casacontente.com.br/{codprod}.jpg",
             "Diferenciais": entidade.get("f3", {}).get("$") or "",
             "Download": entidade.get("f4", {}).get("$") or ""
         }
@@ -269,7 +269,7 @@ def fetch_sankhya_sku_file_info(codprod):
 
         codprod = entidade.get("f0", {}).get("$") or ""
         name = entidade.get("f1", {}).get("$") or ""
-        endimagem = entidade.get("f2", {}).get("$") or ""
+        endimagem = entidade.get("f2", {}).get("$") or f"https://img.casacontente.com.br/{codprod}.jpg"
 
         info = {
             "IsMain": True,
